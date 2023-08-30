@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import 'package:decimal/decimal.dart';
+import 'package:intl/intl.dart';
 import 'package:rational/rational.dart';
 
 class DecimalIntl {
@@ -83,4 +84,28 @@ class DecimalIntl {
 
   @override
   String toString() => _rational.toString();
+}
+
+class DartDecimalNumberParser extends NumberParserBase<Decimal?> {
+  DartDecimalNumberParser(super.format, super.text);
+
+  @override
+  Decimal? fromNormalized(String normalizedText) => Decimal.tryParse(normalizedText);
+
+  @override
+  Decimal? nan() => null;
+
+  @override
+  Decimal? negativeInfinity() => null;
+
+  @override
+  Decimal? positiveInfinity() => null;
+
+  @override
+  Decimal? scaled(Decimal? parsed, int scale) =>
+      parsed != null ?
+      (parsed / Decimal.fromInt(scale)).toDecimal(scaleOnInfinitePrecision: scale) : null;
+
+  static Decimal? parseFormatted(String text, [ NumberFormat? format]) =>
+      DartDecimalNumberParser(format ?? NumberFormat(), text).value;
 }
